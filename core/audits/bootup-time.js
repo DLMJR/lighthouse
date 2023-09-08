@@ -46,6 +46,7 @@ class BootupTime extends Audit {
       scoreDisplayMode: Audit.SCORING_MODES.METRIC_SAVINGS,
       guidanceLevel: 1,
       requiredArtifacts: ['traces', 'devtoolsLogs'],
+      informativeOnPass: true,
     };
   }
 
