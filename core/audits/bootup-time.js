@@ -43,7 +43,7 @@ class BootupTime extends Audit {
       title: str_(UIStrings.title),
       failureTitle: str_(UIStrings.failureTitle),
       description: str_(UIStrings.description),
-      scoreDisplayMode: Audit.SCORING_MODES.NUMERIC,
+      scoreDisplayMode: Audit.SCORING_MODES.METRIC_SAVINGS,
       guidanceLevel: 1,
       requiredArtifacts: ['traces', 'devtoolsLogs'],
     };
@@ -137,6 +137,7 @@ class BootupTime extends Audit {
 
     return {
       score,
+      notApplicable: !results.length,
       numericValue: totalBootupTime,
       numericUnit: 'millisecond',
       displayValue: totalBootupTime > 0 ?

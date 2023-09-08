@@ -204,6 +204,9 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
         const weightedMetricImpact = (newMetricScore - mAudit.result.score) * mAudit.weight;
         overallImpact += weightedMetricImpact;
       }
+      if (audit.id === 'dom-size' || audit.id === 'render-blocking-resources') {
+        console.log(audit.id, overallImpact, overallLinearImpact);
+      }
       return {overallImpact, overallLinearImpact};
     }
 
@@ -283,6 +286,10 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
         .filter(audit => this._classifyPerformanceAudit(audit))
         .filter(audit => !ReportUtils.showAsPassed(audit.result))
         .sort((a, b) => {
+          const scoreA = a.result.scoreDisplayMode === 'informative' ? 100 : Number(a.result.score);
+          const scoreB = b.result.scoreDisplayMode === 'informative' ? 100 : Number(b.result.score);
+          if (scoreA !== scoreB) return scoreA - scoreB;
+
           // Sort by impact.
           const {
             overallImpact: aOverallImpact,
@@ -305,11 +312,7 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
             return bOverallLinearImpact - aOverallLinearImpact;
           }
 
-          if (aGuidanceLevel !== bGuidanceLevel) return bGuidanceLevel - aGuidanceLevel;
-
-          const scoreA = a.result.scoreDisplayMode === 'informative' ? 100 : Number(a.result.score);
-          const scoreB = b.result.scoreDisplayMode === 'informative' ? 100 : Number(b.result.score);
-          return scoreA - scoreB;
+          return bGuidanceLevel - aGuidanceLevel;
         });
 
     if (diagnosticAudits.length) {
